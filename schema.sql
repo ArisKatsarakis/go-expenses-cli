@@ -1,6 +1,8 @@
-DROP TABLE  IF exists authors;
-CREATE TABLE authors (
-  id   BIGINT  NOT NULL AUTO_INCREMENT PRIMARY KEY,
-  name text    NOT NULL,
-  bio  text
+CREATE table  income (
+        income_id  BIGINT NOT null auto_increment,
+        name text not null, 
+        money BIGINT NOT NULL,
+        PRIMARY KEY(income_id) 
 );
+
+ALTER TABLE income ADD COLUMN timestamp datetime not null;

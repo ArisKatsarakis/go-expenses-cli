@@ -1,18 +1,10 @@
--- name: GetAuthor :one
-SELECT * FROM authors
-WHERE id = ? LIMIT 1;
+-- name: GetIncome :one
+SELECT * FROM income
+WHERE income_id  = ? LIMIT 1;
 
--- name: ListAuthors :many
-SELECT * FROM authors
-ORDER BY name;
-
--- name: CreateAuthor :execresult
-INSERT INTO authors (
-  name, bio
-) VALUES (
-  ?, ?
-);
-
--- name: DeleteAuthor :exec
-DELETE FROM authors
-WHERE id = ?;
+-- name: InsertIncome :execresult
+insert into income (
+        name, 
+        money,
+        timestamp
+)values (?, ?, ?);
