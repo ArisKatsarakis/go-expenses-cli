@@ -1,11 +1,15 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"database/sql"
 	"fmt"
+	"os"
+	"os/exec"
+	"time"
 
-	"github.com/ArisKatsarakis/go-expenses-cli/tutorial"
+	"github.com/ArisKatsarakis/go-expenses-cli/db"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -23,26 +27,51 @@ func runningQuery() error {
 		port,
 		dbName,
 	)
-	db, err := sql.Open("mysql", databaseConnectionURL)
+	database, err := sql.Open("mysql", databaseConnectionURL)
 	if err != nil {
 		return err
 	}
 
-	queries := tutorial.New(db)
+	queries := db.New(database)
 
-	authors, err := queries.ListAuthors(ctx)
+	result, err := queries.InsertIncome(ctx, db.InsertIncomeParams{
+		Name:      "Income_name",
+		Money:     100,
+		Timestamp: time.Now(),
+	})
 	if err != nil {
 		return err
 	}
-	fmt.Println(authors)
+	fmt.Println(result)
+
+	results, err := queries.GetIncome(ctx, 1)
+	if err != nil {
+		return err
+	}
+	fmt.Println(results)
 
 	return nil
 }
+func clearScreen() {
+	cmd := exec.Command("clear")
+	cmd.Stdout = os.Stdout
+	cmd.Run()
+}
 
 func main() {
-	fmt.Println("Testing the main")
-	err := runningQuery()
-	if err != nil {
-		fmt.Println(err.Error())
+	reader := bufio.NewReader(os.Stdin)
+	for {
+		clearScreen()
+		fmt.Println("+++++++++++INCOME/EXPENSE+++++++++++")
+		char, _, err := reader.ReadRune()
+		if err != nil {
+			fmt.Print("error reading \n")
+		}
+		switch char {
+		case 'q':
+			fmt.Println("Exit!")
+			return
+		}
+
 	}
 }
