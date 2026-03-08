@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/ArisKatsarakis/go-expenses-cli/db"
+	"github.com/ArisKatsarakis/go-expenses-cli/internal/model"
 	"github.com/ArisKatsarakis/go-expenses-cli/internal/utils"
 	_ "github.com/go-sql-driver/mysql"
 )
@@ -62,16 +63,21 @@ func clearScreen() {
 func main() {
 	reader := bufio.NewReader(os.Stdin)
 
+	c := model.CommandExec{
+		ExecuteName: "q",
+		Name:        "Quit Application",
+	}
+	c.ExecutedFunc = clearScreen
 	for {
 		clearScreen()
 		fmt.Println("+++++++++++INCOME/EXPENSE+++++++++++")
-		runningQuery()
 		char, _, err := reader.ReadRune()
 		if err != nil {
 			fmt.Print("error reading \n")
 		}
 		switch char {
 		case 'q':
+			c.ExecutedFunc()
 			fmt.Println("Exit!")
 			return
 		}
