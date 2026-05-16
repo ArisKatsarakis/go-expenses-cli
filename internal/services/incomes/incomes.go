@@ -38,7 +38,7 @@ func connectDb() (*sql.DB, error) {
 func AddIncome() {
 	var amount int64
 	var name string
-	// var exec string
+	var exec string
 	fmt.Println("Inserting income: ")
 	fmt.Println("Please give ammount: ")
 	fmt.Scanf("%d", &amount)
@@ -55,10 +55,19 @@ func AddIncome() {
 	}
 	connection := db.New(database)
 	result, err := connection.InsertIncome(context.Background(), params)
-	if err != nil {
-		fmt.Println(err.Error())
+
+	for {
+		fmt.Println("Press c for clearing")
+		fmt.Scanf("%s", &exec)
+		if exec == "c" {
+			break
+		}
+
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(result)
 	}
-	fmt.Println(result)
 
 }
 
