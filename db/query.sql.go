@@ -11,6 +11,38 @@ import (
 	"time"
 )
 
+const allIncomes = `-- name: AllIncomes :many
+select income_id, name, money, timestamp from income
+`
+
+func (q *Queries) AllIncomes(ctx context.Context) ([]Income, error) {
+	rows, err := q.db.QueryContext(ctx, allIncomes)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	var items []Income
+	for rows.Next() {
+		var i Income
+		if err := rows.Scan(
+			&i.IncomeID,
+			&i.Name,
+			&i.Money,
+			&i.Timestamp,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Close(); err != nil {
+		return nil, err
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getIncome = `-- name: GetIncome :one
 SELECT income_id, name, money, timestamp FROM income
 WHERE income_id  = ? LIMIT 1
